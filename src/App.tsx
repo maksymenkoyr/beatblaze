@@ -1,11 +1,17 @@
 
 import './App.css'
+import Canvas from './Canvas';
+import Visualization1 from './Visualization1';
 
-function App() {
+const App = () => {
+ 
 
   return (
-   <div></div>
+    <div className='aa'>
+      <Visualization1/>
+    </div>
   )
 }
-
 export default App
+
+
