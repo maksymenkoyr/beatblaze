@@ -15,7 +15,7 @@ const Visualization1 = () => {
     const audioCtx = new AudioContext()
     analyser = audioCtx.createAnalyser()
     analyser.fftSize = 2048
-    const audioSrc = audioCtx.createMediaStreamSource(stream)
+    const audioSrc = audioCtx.createMediaStreamSource(stream as MediaStream)
     audioSrc.connect(analyser)
     data = new Uint8Array(analyser.frequencyBinCount)
   }
@@ -28,30 +28,33 @@ const Visualization1 = () => {
       window.innerWidth,
       window.innerHeight,
     )
-    dataParm = [...dataParm]
-    ctx.lineWidth = 1 //width of candle/bar
+    ctx.lineWidth = (dataParm[0] / 125) ** 12
+    dataParm = Uint8Array.from(dataParm);
+    console.log((dataParm[0] / 120) ** 10)
     ctx.fillStyle = '#000000'
-    ctx.strokeStyle = '#d5d4d5'
-    let angle = (Math.PI * 2) / dataParm.length
-    console.log(dataParm)
+    ctx.strokeStyle = '#eae9ea'
+    const angle = (Math.PI * 2) / dataParm.length
+
     dataParm.forEach((value: number, i: number) => {
       ctx.beginPath()
       ctx.setLineDash([5, 5])
-      ctx.arc(0, 0, (value * 0.5) ** 1.4 - 50, angle * i, angle * ++i)
+      ctx.arc(0, 0, (value * 0.3) ** 1.5, angle * i, angle * ++i)
       ctx.stroke()
     })
   }
   useEffect(() => {
-    const canvas = canvasRef.current
+    const canvas = canvasRef.current as HTMLCanvasElement;
 
     const context = canvas.getContext('2d')
     // Set canvas size
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
+    //@ts-ignore
     context.translate(canvas.width / 2, canvas.height / 2)
     const loopingFunction = () => {
       requestAnimationFrame(loopingFunction)
       analyser.getByteTimeDomainData(data)
+      // @ts-ignore
       draw(context, data)
     }
     requestAnimationFrame(loopingFunction)
@@ -60,7 +63,7 @@ const Visualization1 = () => {
 
   return (
     <div>
-      <canvas id='canvas' style={{backgroundColor: 'black'}} ref={canvasRef} />
+      <canvas id='canvas' style={{ backgroundColor: 'black' }} ref={canvasRef} />
     </div>
   )
 }
